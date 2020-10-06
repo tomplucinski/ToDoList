@@ -10,4 +10,8 @@ public class ToDoRequest {
     public String getTodo() {
         return todo;
     }
+
+    public void setTodo(@NonNull String todo) {
+        this.todo = todo;
+    }
 }
