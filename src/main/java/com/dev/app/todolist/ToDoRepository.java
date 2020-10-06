@@ -2,5 +2,5 @@ package com.dev.app.todolist;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserRepository extends CrudRepository<User, Integer> {
+public interface ToDoRepository extends CrudRepository<ToDoEntity, Integer> {
 }
