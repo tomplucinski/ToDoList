@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping("/api")
 public class ToDoController {
 
     private final ToDoRepository todoRepository;
@@ -13,7 +13,7 @@ public class ToDoController {
         this.todoRepository = repository;
     }
 
-    @PostMapping(path = "/todo")
+    @PostMapping("/todo")
     public ResponseEntity<ToDoEntity> addTodo(@RequestBody ToDoRequest todo) {
 
         ToDoEntity n = new ToDoEntity();
@@ -22,9 +22,14 @@ public class ToDoController {
         return ResponseEntity.ok(savedTodo);
     }
 
-    @GetMapping(path = "/todos")
+    @GetMapping("/todos")
     public ResponseEntity<Iterable<ToDoEntity>> getAllUsers() {
         Iterable<ToDoEntity> todos = todoRepository.findAll();
         return ResponseEntity.ok(todos);
+    }
+
+    @PutMapping("/{todoId}")
+    public ResponseEntity<ToDoEntity> updateTodo(@PathVariable String todoId, @RequestBody ToDoRequest todo) {
+        //finish tomorrow
     }
 }

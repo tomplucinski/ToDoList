@@ -5,11 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ToDoControllerIntegrationTest {
 
     @LocalServerPort
@@ -29,7 +33,7 @@ public class ToDoControllerIntegrationTest {
 
         assertThat(this.restTemplate.postForObject(this.host + this.port + "/api/todo",
                 request, String.class))
-                .isEqualTo("{\"id\":4,\"todo\":\"A new todo item\"}");
+                .isEqualTo("{\"id\":1,\"todo\":\"A new todo item\"}");
     }
 
     @Test
@@ -48,5 +52,24 @@ public class ToDoControllerIntegrationTest {
         assertThat(this.restTemplate.getForObject(this.host + this.port + "/api/todos",
                 String.class))
                 .isEqualTo("[{\"id\":1,\"todo\":\"First todo\"},{\"id\":2,\"todo\":\"Second todo\"},{\"id\":3,\"todo\":\"Third todo\"}]");
+    }
+
+    @Test
+    public void updateTodo() throws Exception {
+        ToDoEntity request1 = new ToDoEntity();
+        request1.setTodo("First one");
+        ToDoEntity request2 = new ToDoEntity();
+        request2.setTodo("Second one");
+        ToDoEntity request3 = new ToDoEntity();
+        request3.setTodo("Third one");
+
+        ToDoEntity firstSaved = toDoRepository.save(request1);
+        ToDoEntity secondSaved = toDoRepository.save(request2);
+        ToDoEntity thirdSaved = toDoRepository.save(request3);
+
+        Integer todoId = firstSaved.getId();
+
+        ToDoEntity updatedTodo = toDoRepository.update(firstSaved);
+
     }
 }
