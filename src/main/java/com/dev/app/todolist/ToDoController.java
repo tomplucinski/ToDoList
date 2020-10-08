@@ -3,14 +3,16 @@ package com.dev.app.todolist;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api")
 public class ToDoController {
 
-    private final ToDoRepository todoRepository;
+    private final ToDoRepository toDoRepository;
 
     public ToDoController(ToDoRepository repository) {
-        this.todoRepository = repository;
+        this.toDoRepository = repository;
     }
 
     @PostMapping("/todo")
@@ -18,18 +20,21 @@ public class ToDoController {
 
         ToDoEntity n = new ToDoEntity();
         n.setTodo(todo.getTodo());
-        ToDoEntity savedTodo = todoRepository.save(n);
+        ToDoEntity savedTodo = toDoRepository.save(n);
         return ResponseEntity.ok(savedTodo);
     }
 
     @GetMapping("/todos")
     public ResponseEntity<Iterable<ToDoEntity>> getAllUsers() {
-        Iterable<ToDoEntity> todos = todoRepository.findAll();
+        Iterable<ToDoEntity> todos = toDoRepository.findAll();
         return ResponseEntity.ok(todos);
     }
 
-    @PutMapping("/{todoId}")
-    public ResponseEntity<ToDoEntity> updateTodo(@PathVariable String todoId, @RequestBody ToDoRequest todo) {
-        //finish tomorrow
+    @PutMapping("/todos/{id}")
+    public ResponseEntity<ToDoEntity> updateTodo(@PathVariable Integer id, @RequestBody ToDoRequest request) {
+        Optional<ToDoEntity> todo = toDoRepository.findById(id);
+        todo.get().setTodo(request.getTodo());
+        ToDoEntity updatedTodo = toDoRepository.save(todo.get());
+        return ResponseEntity.ok(updatedTodo);
     }
 }
