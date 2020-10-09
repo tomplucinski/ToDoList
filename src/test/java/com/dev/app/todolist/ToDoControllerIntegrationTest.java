@@ -7,8 +7,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -37,7 +35,7 @@ public class ToDoControllerIntegrationTest {
     }
 
     @Test
-    public void getAllTodos() throws Exception {
+    public void getAllTodosTest() throws Exception {
         ToDoEntity request1 = new ToDoEntity();
         request1.setTodo("First todo");
         ToDoEntity request2 = new ToDoEntity();
@@ -54,22 +52,35 @@ public class ToDoControllerIntegrationTest {
                 .isEqualTo("[{\"id\":1,\"todo\":\"First todo\"},{\"id\":2,\"todo\":\"Second todo\"},{\"id\":3,\"todo\":\"Third todo\"}]");
     }
 
-//    @Test
-//    public void updateTodo() throws Exception {
-//        ToDoEntity request1 = new ToDoEntity();
-//        request1.setTodo("First one");
-//        ToDoEntity request2 = new ToDoEntity();
-//        request2.setTodo("Second one");
-//        ToDoEntity request3 = new ToDoEntity();
-//        request3.setTodo("Third one");
-//
-//        ToDoEntity firstSaved = toDoRepository.save(request1);
-//        ToDoEntity secondSaved = toDoRepository.save(request2);
-//        ToDoEntity thirdSaved = toDoRepository.save(request3);
-//
-//        Integer todoId = firstSaved.getId();
-//
-//        ToDoEntity updatedTodo = toDoRepository.update(firstSaved);
-//
-//    }
+    @Test
+    public void updateTodoTest() throws Exception {
+        ToDoEntity request1 = new ToDoEntity();
+        request1.setTodo("First one");
+        ToDoEntity firstSaved = toDoRepository.save(request1);
+
+        ToDoEntity request2 = new ToDoEntity();
+        request2.setTodo("Second one");
+        ToDoEntity secondSaved = toDoRepository.save(request2);
+
+        ToDoRequest updateRequest = new ToDoRequest();
+        updateRequest.setTodo("this is my updated todo");
+
+        this.restTemplate.put(this.host + this.port + "/api/todos/1", updateRequest);
+
+        assertThat(this.restTemplate.getForObject(this.host + this.port + "/api/todos",
+                String.class))
+                .isEqualTo("[{\"id\":1,\"todo\":\"this is my updated todo\"},{\"id\":2,\"todo\":\"Second one\"}]");
+    }
+
+    @Test
+    public void deleteTodoTest() throws Exception {
+        ToDoEntity todo  = new ToDoEntity();
+        todo.setTodo("this is my todo");
+        toDoRepository.save(todo);
+
+        this.restTemplate.delete(this.host + this.port + "/api/todos/1");
+
+        assertThat(this.restTemplate.getForObject(this.host + this.port + "/api/todos",
+                String.class)).isEqualTo("[]");
+    }
 }

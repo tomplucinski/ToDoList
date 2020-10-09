@@ -37,4 +37,11 @@ public class ToDoController {
         ToDoEntity updatedTodo = toDoRepository.save(todo.get());
         return ResponseEntity.ok(updatedTodo);
     }
+
+    @DeleteMapping("/todos/{id}")
+    public ResponseEntity deleteTodo(@PathVariable Integer id) {
+        Optional<ToDoEntity> todo = toDoRepository.findById(id);
+        toDoRepository.delete(todo.get());
+        return ResponseEntity.ok("Successfully deleted todo");
+    }
 }
