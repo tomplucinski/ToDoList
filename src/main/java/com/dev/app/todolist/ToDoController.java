@@ -25,9 +25,15 @@ public class ToDoController {
     }
 
     @GetMapping("/todos")
-    public ResponseEntity<Iterable<ToDoEntity>> getAllUsers() {
+    public ResponseEntity<Iterable<ToDoEntity>> getAllTodos() {
         Iterable<ToDoEntity> todos = toDoRepository.findAll();
         return ResponseEntity.ok(todos);
+    }
+
+    @GetMapping("/todos/{id}")
+    public ResponseEntity<ToDoEntity> getTodoById(@PathVariable Integer id) {
+        Optional<ToDoEntity> todo = toDoRepository.findById(id);
+        return ResponseEntity.ok(todo.get());
     }
 
     @PutMapping("/todos/{id}")

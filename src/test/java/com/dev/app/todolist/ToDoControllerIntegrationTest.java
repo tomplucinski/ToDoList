@@ -83,4 +83,18 @@ public class ToDoControllerIntegrationTest {
         assertThat(this.restTemplate.getForObject(this.host + this.port + "/api/todos",
                 String.class)).isEqualTo("[]");
     }
+
+    @Test
+    public void getTodoByIdTest() throws Exception {
+        ToDoEntity todo = new ToDoEntity();
+        todo.setTodo("first todo");
+        toDoRepository.save(todo);
+
+        ToDoEntity todo2 = new ToDoEntity();
+        todo2.setTodo("second todo");
+        toDoRepository.save(todo2);
+
+        assertThat(this.restTemplate.getForObject(this.host + this.port + "/api/todos/2",
+                String.class)).isEqualTo("{\"id\":2,\"todo\":\"second todo\"}");
+    }
 }
